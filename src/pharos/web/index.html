@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#081321">
+  <link rel="icon" type="image/png" sizes="64x64" href="/static/pharos-icon.png?v=060dev12">
+  <title>PHAROS · Local knowledge platform</title>
+  <link rel="stylesheet" href="/static/style.css?v=070kb27">
+  <link rel="stylesheet" href="/static/layout-dev2.css?v=080rc2">
+  <link rel="stylesheet" href="/custom.css">
+  <script src="/static/markdown.js?v=070markdown32" defer></script>
+  <script src="/static/app.js?v=070markdown32" defer></script>
+  <script src="/static/knowledge.js?v=070kb27" defer></script>
+  <script src="/static/kb_viewer.js?v=060kb35" defer></script>
+  <script src="/static/settings.js?v=070settings25" defer></script>
+  <script src="/static/home.js?v=060ux20" defer></script>
+  <script src="/static/kiwix.js?v=060kiwix32" defer></script>
+  <script src="/static/jobs.js?v=070geo20" defer></script>
+  <script src="/static/updates.js?v=070updates28" defer></script>
+  <script src="/static/translations.js?v=060ux20" defer></script>
+  <script src="/static/maps.js?v=070geo20" defer></script>
+  <script src="/static/maps_viewer.js?v=080rc2" defer></script>
+  <script src="/static/maps_gpx.js?v=070markdown32" defer></script>
+  <script src="/static/maps_search.js?v=070geo16" defer></script>
+</head>
+<body>
+<div class="shell">
+  <main class="main">
+    <header class="pharos-topbar" aria-label="PHAROS">
+      <button type="button" class="pharos-logo" id="pharos-home" aria-label="PHAROS · Home" title="PHAROS · Home"><img src="/static/pharos-home.png?v=050dev13" alt="" width="76" height="59" aria-hidden="true"></button>
+      <button type="button" class="notification-indicator" id="notification-indicator" data-go="notifications" hidden data-i18n-aria="notifications" aria-label="Notifiche" title="Notifiche"><span class="signal-line" aria-hidden="true"></span><span class="sr-only" data-i18n="notifications">Notifiche</span></button>
+    </header>
+    <div class="content">
+      <div class="page-heading"><h1 id="page-title" data-i18n="home">Home</h1></div>
+      <section class="view active" id="view-home">
+        <div class="home-intro"><h2><span data-i18n="homeWelcome">Benvenuto in PHAROS</span></h2></div>
+        <nav class="home-grid" id="home-grid" aria-label="PHAROS services">
+          <button class="home-tile" type="button" data-view="chat"><span class="tile-symbol" aria-hidden="true">✦</span><strong data-i18n="chat">Chat IA</strong><span class="home-tile-description" data-i18n="homeChatDesc">Domande e risposte con il motore IA</span></button>
+          <button class="home-tile" type="button" id="knowledge-nav" data-view="knowledge"><span class="tile-symbol" aria-hidden="true">▤</span><strong data-i18n="knowledge">Knowledge Base</strong><span class="home-tile-description" data-i18n="homeKnowledgeDesc">Documenti e archivi ZIM per la ricerca IA</span></button>
+          <button class="home-tile" type="button" id="kiwix-nav" data-view="kiwix"><span class="tile-symbol" aria-hidden="true">▣</span><strong>Kiwix</strong><span class="home-tile-description" data-i18n="homeKiwixDesc">Consulta e scarica enciclopedie offline</span></button>
+          <button class="home-tile" type="button" data-view="settings"><span class="tile-symbol" aria-hidden="true">⚙</span><strong data-i18n="settings">Configurazione</strong><span class="home-tile-description" data-i18n="homeSettingsDesc">Gestisci le impostazioni di PHAROS</span></button>
+          <button class="home-tile" type="button" data-view="diagnostics"><span class="tile-symbol" aria-hidden="true">◷</span><strong data-i18n="diagnostics">Diagnostica</strong><span class="home-tile-description" data-i18n="homeDiagnosticsDesc">Controlla lo stato dei servizi</span></button>
+          <button class="home-tile" type="button" data-view="notifications"><span class="tile-symbol" aria-hidden="true">◉</span><strong data-i18n="notifications">Notifiche</strong><span class="home-tile-description" data-i18n="homeNotificationsDesc">Segui download e attività in corso</span></button>
+          <button class="home-tile" type="button" data-view="translations"><span class="tile-symbol" aria-hidden="true">文</span><strong data-i18n="translations">Traduzioni</strong><span class="home-tile-description" data-i18n="homeTranslationsDesc">Gestisci le lingue dell'interfaccia</span></button>
+          <button class="home-tile" type="button" data-view="maps"><span class="tile-symbol" aria-hidden="true">⌖</span><strong data-i18n="maps">Mappe</strong><span class="home-tile-description" data-i18n="homeMapsDesc">Scarica aree cartografiche offline</span></button>
+
+        </nav>
+        <footer class="home-footer">PHAROS <span id="sidebar-version">—</span></footer>
+        <div class="home-edit-bar">
+          <button type="button" id="home-edit" class="outline-btn" data-i18n="homeEdit">Modifica</button>
+          <button type="button" id="home-save" class="primary-btn" data-i18n="homeSave" hidden>Salva</button>
+          <button type="button" id="home-cancel" class="outline-btn" data-i18n="homeCancel" hidden>Annulla</button>
+          <button type="button" id="home-reset" class="outline-btn" data-i18n="homeReset" hidden>Ripristina</button>
+          <span id="home-edit-feedback" class="inline-feedback" role="status"></span>
+        </div>
+      </section>
+      <section class="view" id="view-maps">
+        <div class="section-heading"><div><h2 data-i18n="mapsHeading">Mappe offline</h2>
+          </div>
+          <button type="button" class="text-button" id="maps-refresh" data-i18n="refresh">Aggiorna</button></div>
+        <div class="maps-manager">
+          <div class="panel">
+            <h4 data-i18n="mapsInstalled">Aree archiviate</h4>
+            <div id="maps-region-list" class="maps-library-grid" aria-live="polite"><p data-i18n="mapsLocalLoading">Caricamento mappe locali…</p></div>
+          </div>
+
+          <div class="panel maps-search-panel">
+            <h4 data-i18n="mapsSearchHeading">Ricerca geografica offline</h4>
+            <p class="help-text" data-i18n="mapsSearchDescription">Cerca nei dati geografici delle sole aree che hai indicizzato.</p>
+            <form id="maps-search-form" class="maps-search-form">
+              <label class="sr-only" for="maps-search-query" data-i18n="mapsSearchHeading">Ricerca geografica offline</label>
+              <input id="maps-search-query" type="search" minlength="2" maxlength="120"
+                     autocomplete="off" data-i18n-placeholder="mapsSearchPlaceholder"
+                     placeholder="Località, indirizzo o punto d'interesse…" required>
+              <button class="primary-btn" type="submit" data-i18n="mapsSearchButton">Cerca</button>
+            </form>
+            <p id="maps-search-feedback" class="inline-feedback" role="status"></p>
+            <div id="maps-search-results" class="maps-search-results" aria-live="polite"></div>
+            <small class="help-text">© OpenStreetMap contributors · ODbL 1.0</small>
+          </div>
+          <div class="panel maps-gpx-manager">
+            <h4 data-i18n="gpxHeading">Tracce GPX</h4>
+            <p class="help-text" data-i18n="gpxDescription">Importa tracce e itinerari GPX per visualizzarli sulle mappe offline.</p>
+            <form id="maps-gpx-import-form" class="maps-gpx-import-form">
+              <input type="file" id="maps-gpx-file" accept=".gpx,application/gpx+xml" data-i18n-aria="gpxChoose" hidden>
+              <button type="button" id="maps-gpx-choose" class="primary-btn" data-i18n="gpxChooseButton" data-i18n-aria="gpxChoose">Aggiungi traccia GPX</button>
+              <span id="maps-gpx-import-status" class="help-text" aria-live="polite"></span>
+            </form>
+            <p class="maps-gpx-feedback" id="maps-gpx-feedback" role="status"></p>
+            <div id="maps-gpx-library" class="maps-gpx-library" aria-live="polite"></div>
+            <a class="maps-gpx-export outline-btn" href="/api/maps/waypoints/export.gpx" download="pharos-waypoints.gpx" data-i18n="gpxExportWaypoints">Esporta waypoint GPX</a>
+          </div>
+          <div class="panel maps-area-browser">
+            <div class="maps-browser-header">
+              <h4 data-i18n="mapsCatalogTitle">Catalogo aree geografiche</h4>
+              <span id="maps-source-status" class="help-text" role="status"></span>
+            </div>
+            <p class="help-text" data-i18n="mapsCatalogInfo">Scegli un continente, poi un Paese o una regione. La cartografia viene estratta da una sorgente Protomaps verificata.</p>
+            <label for="maps-filter" data-i18n="mapsFilterLabel">Cerca un'area geografica</label>
+            <input type="search" id="maps-filter" autocomplete="off" maxlength="100" data-i18n-placeholder="mapsFilterPlaceholder" placeholder="Continente, Paese, regione…">
+            <nav id="maps-breadcrumbs" class="maps-breadcrumbs" aria-label="Geographic navigation"></nav>
+            <div id="maps-catalog-list" class="maps-catalog-grid" aria-live="polite"></div>
+            <p class="inline-feedback" id="maps-feedback" role="status"></p>
+          </div>
+          <div class="panel" id="maps-active-panel" hidden>
+            <h4 data-i18n="mapsWork">Preparazione in background</h4>
+            <div id="maps-active-list" aria-live="polite"></div>
+          </div>
+          <p class="help-text" data-i18n="mapsPreviewNote">Il visualizzatore cartografico, gli itinerari e i PDF saranno introdotti nelle prossime revisioni.</p>
+        </div>
+      </section>
+      <div class="maps-viewer" id="maps-viewer" role="dialog" aria-modal="false" aria-label="Atlante offline" hidden>
+        <button type="button" class="primary-btn maps-viewer-close-float" id="maps-viewer-close" data-i18n="mapsViewerClose" aria-label="Chiudi mappa">Chiudi</button>
+        <div id="maps-viewer-canvas" class="maps-viewer-canvas" aria-label="Mappa offline interattiva"></div>
+        <button type="button" id="maps-gpx-toggle" class="maps-waypoint-icon maps-gpx-toggle" data-i18n-aria="gpxShowTracks" data-i18n-title="gpxShowTracks" aria-label="Tracce GPX" title="Tracce GPX" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18c4-12 7 1 11-10s5 0 7-4"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="4" r="2"/></svg></button>
+        <div id="maps-gpx-panel" class="maps-gpx-panel" hidden>
+          <strong data-i18n="gpxHeading">Tracce GPX</strong>
+          <p class="help-text" data-i18n="gpxViewerHint">Seleziona le tracce da mostrare sulla mappa.</p>
+          <div id="maps-gpx-visible-list" class="maps-gpx-visible-list"></div>
+          <p id="maps-gpx-viewer-feedback" class="maps-gpx-feedback" role="status"></p>
+        </div>
+        <div class="maps-waypoint-tools">
+          <button id="maps-waypoint-toggle" class="maps-waypoint-icon" type="button" title="Waypoint" data-i18n-title="waypointsManage" data-i18n-aria="waypointsManage" aria-label="Waypoint" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
+          <div id="maps-waypoint-actions" class="maps-waypoint-actions" hidden>
+            <button id="maps-waypoint-add" class="maps-waypoint-icon" type="button" title="Aggiungi" data-i18n-title="waypointsAdd" data-i18n-aria="waypointsAdd" aria-label="Aggiungi" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+            <button id="maps-waypoint-edit" class="maps-waypoint-icon" type="button" title="Gestisci" data-i18n-title="waypointsSelect" data-i18n-aria="waypointsSelect" aria-label="Gestisci" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5 4 4M4 20l4.6-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"/></svg></button>
+            <button id="maps-waypoint-finish" class="maps-waypoint-icon" type="button" title="Termina" data-i18n-title="waypointsDone" data-i18n-aria="waypointsDone" aria-label="Termina"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg></button>
+          </div>
+        </div>
+        <div id="maps-waypoint-move-hint" class="maps-waypoint-move-hint" hidden role="status"><span data-i18n="waypointsMoveHint">Tocca il nuovo punto sulla mappa.</span><button id="maps-waypoint-move-cancel" class="outline-btn" type="button" data-i18n="waypointsMoveCancel">Annulla spostamento</button></div>
+        <form id="maps-waypoint-form" class="maps-waypoint-form" hidden>
+          <strong id="maps-waypoint-heading"></strong>
+          <label for="maps-waypoint-name" data-i18n="waypointsName">Nome</label>
+          <input id="maps-waypoint-name" maxlength="120" required autocomplete="off">
+          <label for="maps-waypoint-description" data-i18n="waypointsDescription">Descrizione</label>
+          <textarea id="maps-waypoint-description" maxlength="2000" rows="3"></textarea>
+          <div class="maps-waypoint-coordinates">
+            <label for="maps-waypoint-latitude"><span data-i18n="waypointsLatitude">Latitudine</span><input id="maps-waypoint-latitude" type="number" min="-90" max="90" step="any" required></label>
+            <label for="maps-waypoint-longitude"><span data-i18n="waypointsLongitude">Longitudine</span><input id="maps-waypoint-longitude" type="number" min="-180" max="180" step="any" required></label>
+          </div>
+          <button type="button" class="outline-btn maps-waypoint-move-button" id="maps-waypoint-move" data-i18n="waypointsMove" hidden>Seleziona nuova posizione sulla mappa</button>
+          <p id="maps-waypoint-feedback" class="maps-waypoint-feedback" role="status"></p>
+          <div class="maps-waypoint-form-actions">
+            <button type="submit" class="primary-btn" id="maps-waypoint-save" data-i18n="waypointsSave">Salva</button>
+            <button type="button" class="outline-btn" id="maps-waypoint-cancel" data-i18n="waypointsCancel">Annulla</button>
+            <button type="button" class="outline-btn" id="maps-waypoint-delete" data-i18n="waypointsDelete" hidden>Elimina</button>
+          </div>
+        </form>
+        <p id="maps-viewer-error" class="maps-viewer-error" role="alert" hidden></p>
+        <div class="maps-viewer-credit">© OpenStreetMap contributors · Protomaps · MapLibre · PMTiles</div>
+      </div>
+      <div id="kb-document-viewer" class="kb-document-viewer" role="dialog" aria-modal="false" aria-label="Documento Knowledge Base" hidden>
+        <div class="kb-document-viewer-toolbar">
+          <strong id="kb-document-viewer-title"></strong>
+          <a id="kb-document-viewer-download" class="outline-btn" download data-i18n="kbViewerDownload">Scarica</a>
+          <button type="button" id="kb-document-viewer-close" class="primary-btn" data-i18n="kiwixViewerClose">Chiudi</button>
+        </div>
+        <p id="kb-document-viewer-status" class="kb-document-viewer-status" role="status" hidden></p>
+        <iframe id="kb-document-viewer-pdf" title="Documento PDF" referrerpolicy="no-referrer" hidden></iframe>
+        <pre id="kb-document-viewer-text" hidden></pre>
+      </div>
+      <div class="kiwix-viewer" id="kiwix-viewer" role="dialog" aria-modal="false" aria-label="Lettore Kiwix offline" hidden>
+        <button type="button" class="primary-btn kiwix-viewer-close" id="kiwix-viewer-close" data-i18n="kiwixViewerClose">Chiudi</button>
+        <iframe id="kiwix-viewer-frame" title="Archivio Kiwix" data-i18n-title="kiwixViewerTitle"
+          sandbox="allow-scripts allow-forms allow-downloads" referrerpolicy="no-referrer"></iframe>
+      </div>
+      <section class="view" id="view-chat">
+        <div class="section-heading"><div><h2 data-i18n="chatHeading">Chat con il motore IA</h2></div><button class="text-button" id="clear-chat" type="button" data-i18n="clearChat">Nuova chat</button></div>
+        <div class="chat-card">
+          <div class="chat-toolbar"><label for="model-select" data-i18n="model">Modello</label><select id="model-select"><option value="" data-i18n="loadingModels">Caricamento modelli...</option></select><label for="chat-thinking" id="chat-thinking-label" data-i18n="chatThinking" hidden>Thinking</label><select id="chat-thinking" aria-label="Thinking" hidden><option value="auto" data-i18n="chatThinkingAuto">Automatico</option><option value="off" data-i18n="chatThinkingOff">Disattivato</option><option value="on" data-i18n="chatThinkingOn">Attivato</option></select><button type="button" class="outline-btn" id="chat-npu-action" hidden></button><button class="outline-btn" id="refresh-models" type="button" data-i18n="refresh">Aggiorna</button></div>
+          <p class="model-legend" id="chat-model-legend" data-i18n="modelLegend">* Modello selezionato · ᴺᴾᵁ Caricato in NPU</p>
+          <details class="chat-kb-disclosure" id="chat-kb-disclosure"><summary data-i18n="chatKBTitle">Knowledge Base per questa chat</summary>
+          <div class="chat-kb-bar">
+            <div class="chat-kb-header"><strong data-i18n="chatKBTitle">Knowledge Base per questa chat</strong><button type="button" class="text-button" id="chat-refresh-kb" data-i18n="refresh">Aggiorna</button></div>
+            <div class="chat-kb-selection" id="chat-kb-list" aria-live="polite"></div>
+          </div>
+          </details>
+          <div class="chat-geo-bar">
+            <label for="chat-geo-enabled">
+              <input type="checkbox" id="chat-geo-enabled">
+              <span data-i18n="chatGeoTitle">Ricerca geografica offline con IA</span>
+            </label>
+            <span class="chat-geo-hint" data-i18n="chatGeoHint">L'IA interpreta la domanda; i luoghi provengono dagli indici locali.</span>
+          </div>
+          <div class="chat-log" id="chat-log" aria-live="polite" aria-label="Chat messages"><div class="chat-empty"><div class="empty-icon">✦</div><strong data-i18n="chatEmptyTitle">La conversazione comincia qui</strong><p data-i18n="chatEmptyBody">Seleziona un modello e scrivi un messaggio.</p></div></div>
+          <p id="chat-background-hint" class="help-text chat-background-hint" role="status" hidden></p>
+          <form id="chat-form" class="chat-form"><label for="chat-input" class="sr-only" data-i18n="yourMessage">Il tuo messaggio</label><textarea id="chat-input" rows="2" maxlength="8000" data-i18n-placeholder="chatPlaceholder" placeholder="Scrivi un messaggio..." required></textarea><button class="primary-btn" id="send-button" type="submit" data-i18n="send">Invia</button></form>
+          <p class="inline-feedback" id="chat-feedback" role="status"></p>
+        </div>
+      </section>
+      <section class="view" id="view-knowledge">
+        <div class="section-heading"><div><h2 data-i18n="knowledgeTitle">Gestione Knowledge Base</h2></div>
+          <button type="button" class="text-button" id="refresh-kb" data-i18n="refresh">Aggiorna</button></div>
+        <div id="kb-active-jobs" class="panel module-active-jobs" aria-live="polite" hidden></div>
+        <div class="panel kb-model-panel">
+          <h3 data-i18n="kbEmbeddingHeading">Modello di embedding</h3>
+          <div class="kb-model-row">
+            <select id="kb-embedding-model" aria-label="Modello embedding"><option value="">Caricamento modelli…</option></select>
+            <button type="button" id="kb-npu-action" class="outline-btn" hidden></button><button type="button" id="kb-refresh-embedding" class="outline-btn" data-i18n="refresh">Aggiorna</button>
+            <button type="button" id="kb-apply-embedding" class="primary-btn" data-i18n="kbChangeModel">Cambia modello</button>
+          </div>
+          <p class="model-legend" id="kb-model-legend" data-i18n="kbModelLegend">* Modello attualmente configurato · ᴺᴾᵁ Caricato in NPU</p>
+          <p class="help-text kb-catalog-note" id="kb-embedding-catalog-note" role="status"></p>
+          <p class="inline-feedback" id="kb-embedding-feedback" role="status"></p>
+          <div id="kb-reindex-progress" class="kb-reindex-progress" hidden>
+            <strong id="kb-reindex-state"></strong>
+            <progress id="kb-reindex-bar" max="100" value="0"></progress>
+            <span id="kb-reindex-detail"></span>
+          </div>
+        </div>
+        <div class="panel kb-manager-panel">
+          <h3 data-i18n="kbNew">Nuova Knowledge Base</h3>
+          <form id="kb-create-form" class="kb-create-form">
+            <div class="kb-field"><label class="kb-field-label" for="kb-new-name" data-i18n="kbName">Nome</label>
+              <input id="kb-new-name" maxlength="100" required placeholder="Es. Manuali PHAROS" data-i18n-placeholder="kbNameExample"></div>
+            <div class="kb-field"><label class="kb-field-label" for="kb-new-desc" data-i18n="kbDescription">Descrizione (facoltativa)</label>
+              <input id="kb-new-desc" maxlength="500" placeholder="" ></div>
+            <button type="submit" class="primary-btn" id="kb-create-button" data-i18n="kbCreate">Crea</button>
+          </form>
+          <p class="inline-feedback" id="kb-feedback" role="status"></p>
+        </div>
+        <div id="kb-manager" class="kb-manager-grid" aria-live="polite"></div>
+      </section>
+      <section class="view" id="view-kiwix">
+        <div class="section-heading"><div><h2 data-i18n="kiwixBooks">Biblioteca Kiwix</h2></div>
+          <button type="button" class="text-button" id="kiwix-refresh" data-i18n="refresh">Aggiorna</button></div>
+        <div id="kiwix-active-jobs" class="panel module-active-jobs" aria-live="polite" hidden></div>
+        <div class="panel">
+          <h4 data-i18n="kiwixLocalTitle">La tua biblioteca offline</h4>
+          <p class="help-text" id="kiwix-server-status" role="status"></p>
+          <form id="kiwix-search-form" class="kiwix-search-form" method="GET" hidden>
+            <label class="sr-only" for="kiwix-query" data-i18n="kiwixQuery">Cerca negli archivi</label>
+            <input id="kiwix-query" name="pattern" required maxlength="200" data-i18n-placeholder="kiwixQuery" placeholder="Cerca">
+            <select id="kiwix-book-select" name="books.name" aria-label="Archivio ZIM"></select>
+            <button class="primary-btn" type="submit" data-i18n="kiwixSearch">Cerca</button>
+          </form>
+          <p class="inline-feedback" id="kiwix-feedback" role="status"></p>
+          <div id="kiwix-book-list" class="kiwix-book-grid" aria-live="polite"></div>
+          <button type="button" class="outline-btn" id="kiwix-more" hidden data-i18n="kiwixMore">Altri archivi</button>
+        </div>
+        <div class="panel kiwix-catalog-panel">
+          <div class="kiwix-catalog-heading">
+            <div><h4 data-i18n="kiwixOnlineTitle">Catalogo Kiwix ufficiale</h4>
+              <p class="help-text" data-i18n="kiwixOnlineNote">Cerca archivi da scaricare. La consultazione richiede Internet; i file scaricati funzionano offline.</p></div>
+          </div>
+          <form id="kiwix-catalog-form" class="kiwix-catalog-controls">
+            <label><span data-i18n="kiwixFindTitle">Titolo o argomento</span>
+              <input id="kiwix-catalog-query" type="search" maxlength="100" data-i18n-placeholder="kiwixFindPlaceholder" placeholder="Es. Wikipedia, medicina, mappe"></label>
+            <label><span data-i18n="kiwixLanguage">Lingua</span>
+              <select id="kiwix-catalog-language">
+                <option value="" data-i18n="kiwixAllLanguages">Tutte</option>
+                <option value="ita">Italiano</option><option value="eng">English</option>
+                <option value="fra">Français</option><option value="deu">Deutsch</option>
+                <option value="spa">Español</option><option value="por">Português</option>
+              </select></label>
+            <label><span data-i18n="kiwixCategory">Categoria</span>
+              <select id="kiwix-catalog-category">
+                <option value="" data-i18n="kiwixAllCategories">Tutte</option>
+                <option value="wikipedia">Wikipedia</option><option value="wiktionary">Wiktionary</option>
+                <option value="gutenberg">Gutenberg</option><option value="wikibooks">Wikibooks</option>
+                <option value="other" data-i18n="kiwixOther">Altro</option>
+              </select></label>
+            <button class="primary-btn" type="submit" id="kiwix-catalog-search" data-i18n="kiwixFind">Trova archivi</button>
+          </form>
+          <p id="kiwix-catalog-feedback" class="inline-feedback" role="status"></p>
+          <div id="kiwix-catalog-list" class="kiwix-book-grid" aria-live="polite"></div>
+          <button type="button" class="outline-btn" id="kiwix-catalog-more" hidden data-i18n="kiwixMore">Altri archivi</button>
+          <details class="kiwix-manual-download">
+            <summary data-i18n="kiwixManualDownload">Download manuale tramite URL (avanzato)</summary>
+            <form id="kiwix-download-form" class="kiwix-search-form">
+              <label for="kiwix-download-url" class="sr-only" data-i18n="kiwixDownloadUrl">URL ZIM ufficiale</label>
+              <input id="kiwix-download-url" type="url" required maxlength="2000" placeholder="https://download.kiwix.org/zim/.../archivio.zim" autocomplete="off">
+              <button type="submit" class="outline-btn" id="kiwix-download-start" data-i18n="kiwixDownload">Scarica ZIM</button>
+            </form>
+          </details>
+          <p id="kiwix-download-feedback" class="inline-feedback" role="status"></p>
+        </div>
+      </section>
+      <section class="view" id="view-diagnostics"><div class="section-heading"><div><h2 data-i18n="healthTitle">Stato del sistema</h2></div><button class="text-button" type="button" data-go-refresh="diagnostics" data-i18n="refresh">Aggiorna</button></div><div class="panel"><div class="health-row"><span data-i18n="coreService">PHAROS Core</span><strong id="health-core" data-i18n="active">Attivo</strong></div><div class="health-row"><span data-i18n="database">Database locale</span><strong id="health-db">—</strong></div><div class="health-row"><span data-i18n="dataVolume">Volume dati</span><strong id="health-storage">—</strong></div><div class="health-row"><span data-i18n="aiService">Motore IA</span><strong id="health-ai">—</strong></div><p class="help-text" id="health-note"></p></div>
+        <div class="panel pharos-updates-panel" id="pharos-updates-panel">
+          <div class="pharos-updates-heading">
+            <h4 data-i18n="updatesTitle">Aggiornamenti PHAROS</h4>
+            <button type="button" class="outline-btn" id="updates-check" data-i18n="updatesCheck">Verifica aggiornamenti</button>
+          </div>
+          <p class="help-text" id="updates-status" role="status" aria-live="polite" data-i18n="updatesWaiting">Verifica non ancora eseguita.</p>
+          <div class="pharos-updates-details">
+            <span data-i18n="updatesInstalled">Versione installata</span>
+            <code id="updates-installed">—</code>
+            <span data-i18n="updatesRemote">Versione disponibile</span>
+            <code id="updates-remote">—</code>
+          </div>
+          <p class="help-text" id="updates-last-checked"></p>
+          <a id="updates-compare" href="https://github.com/mascalx/pharos" target="_blank" rel="noopener noreferrer" hidden data-i18n="updatesChanges">Visualizza le modifiche su GitHub</a>
+          <div class="pharos-update-actions">
+            <button type="button" class="primary-btn" id="updates-install" data-i18n="updatesInstall" hidden>Installa aggiornamento</button>
+            <p class="help-text" id="updates-install-status" role="status" aria-live="polite"></p>
+          </div>
+        </div></section>
+      <section class="view" id="view-notifications">
+        <div class="section-heading"><div><h2 data-i18n="notificationsHeading">Attività e notifiche</h2></div>
+          <button type="button" class="text-button" id="jobs-refresh" data-i18n="refresh">Aggiorna</button></div>
+        <p id="jobs-feedback" class="inline-feedback" role="status"></p>
+        <div id="job-list" class="panel" aria-live="polite"></div>
+      </section>
+      <section class="view" id="view-settings">
+        
+        <div class="section-heading"><div><h2 data-i18n="configHeading">Impostazioni di PHAROS</h2></div></div>
+        <div class="panel">
+          <form id="settings-form" class="settings-form">
+            <div id="settings-fields"></div>
+            <button type="submit" class="primary-btn" id="settings-save" data-i18n="settingsSave">Salva configurazione</button>
+          </form>
+          <p class="inline-feedback" id="settings-feedback" role="status"></p>
+
+        </div></section>
+      <section class="view" id="view-translations">
+        <div class="section-heading">
+          <div><h2 data-i18n="translationsTitle">Gestione traduzioni</h2></div>
+          <button type="button" class="outline-btn" id="translations-back" data-i18n="translationsBack">Torna alla Home</button>
+        </div>
+        <div class="panel translation-manager">
+          <p class="help-text" data-i18n="translationsIntro">Crea e modifica traduzioni personalizzate.</p>
+          <div class="translation-toolbar">
+            <label><span data-i18n="translationsSelect">Lingua da modificare</span>
+              <select id="translations-list"></select>
+            </label>
+            <button type="button" class="outline-btn" id="translations-new" data-i18n="translationsNew">Nuova lingua</button>
+          </div>
+          <div id="translations-create-panel" class="translation-create-panel" hidden>
+            <label><span data-i18n="translationsCode">Codice lingua</span>
+              <input id="translations-new-code" maxlength="5" placeholder="fr" autocomplete="off"></label>
+            <label><span data-i18n="translationsName">Nome della lingua</span>
+              <input id="translations-new-name" maxlength="60" placeholder="Français" autocomplete="off"></label>
+            <button type="button" class="primary-btn" id="translations-create" data-i18n="translationsCreate">Prepara nuova traduzione</button>
+          </div>
+          <p id="translations-feedback" class="inline-feedback" role="status" aria-live="polite"></p>
+          <div id="translations-editor" hidden>
+            <div class="translation-meta">
+              <div><code id="translations-code-view"></code></div>
+              <label><span data-i18n="translationsName">Nome della lingua</span>
+                <input id="translations-name" maxlength="60"></label>
+            </div>
+            <p class="help-text" id="translations-readonly" data-i18n="translationsReadOnly" hidden>Lingua integrata: sola lettura.</p>
+            <p class="help-text" data-i18n="translationsFallback">Lascia un campo vuoto per usare automaticamente il testo inglese.</p>
+            <div class="translation-filter">
+              <input type="search" id="translations-search" data-i18n-placeholder="translationsSearch" placeholder="Cerca testi o chiavi…">
+              <label><input type="checkbox" id="translations-missing">
+                <span data-i18n="translationsMissing">Mostra solo testi da tradurre</span></label>
+            </div>
+            <p id="translations-count" class="help-text"></p>
+            <div id="translations-entries" class="translation-entry-list"></div>
+            <div class="translation-footer">
+              <button type="button" class="primary-btn" id="translations-save" data-i18n="translationsSave">Salva traduzione</button>
+              <button type="button" class="outline-btn translation-delete" id="translations-delete" data-i18n="translationsDelete">Elimina traduzione</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

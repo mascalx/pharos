@@ -1,0 +1,58 @@
+# PHAROS: tutte le impostazioni applicative sono definite qui.
+# I percorsi relativi sono risolti dalla cartella contenente questo file.
+
+[general]
+language = "en"  # it, en
+
+[server]
+host = "127.0.0.1" # per accesso dalla LAN usare 0.0.0.0 con firewall adeguato
+port = 8080
+
+[security]
+secrets_file = "./secrets.toml"
+
+[storage]
+data_dir = "./pharos-data"
+database_dir = "./pharos-db"
+cache_dir = "./pharos-cache"
+# ID univoco per riconoscere il volume giusto; generato da `pharos init`.
+marker_id = "REPLACE_ON_INIT"
+require_marker = true
+# true se data_dir DEVE coincidere con un punto di mount (es. NFS su Linux)
+require_mount = false
+
+[ai]
+enabled = false
+provider = "tiiny_direct"  # tiiny_direct (predefinito), tiiny_gateway, openai_compatible
+# Chiave API: eseguire `pharos ai-key set --config /percorso/config.toml`.
+# Sarà conservata in `secrets.toml` (mai in questo file).
+# Tiiny Direct: indirizzo del dispositivo Tiiny, senza /v1.
+# Tiiny Gateway: indirizzo del gateway esterno; compatibile OpenAI: indirizzo del provider.
+base_url = "http://127.0.0.1"
+# Compatibilità storica: un eventuale ai.management_url esistente viene
+# ignorato da tiiny_gateway; PHAROS contatta esclusivamente il Gateway.
+# manual = nessun caricamento automatico; protected = auto-load senza unload;
+# managed = come protected fino a verifica delle informazioni di spazio NPU.
+npu_policy = "protected"
+protected_models = ""  # ID modello separati da virgola, usati nella futura policy di eviction
+queue_limit = 16
+npu_load_timeout_seconds = 120
+default_model = ""
+request_timeout_seconds = 120
+max_output_tokens = 1200
+
+# Motore RAG opzionale, disattivato fino alla configurazione di Qdrant.
+[rag]
+enabled = false
+embedding_model = ""  # Impostare l'ID esatto del modello su Tiiny prima di abilitare RAG
+qdrant_url = "http://127.0.0.1:6333"
+chunk_chars = 1100
+overlap_chars = 150
+max_document_mb = 12
+search_limit = 5
+
+# Kiwix integrato: kiwix-serve avviato dal Core.
+# Il browser usa sempre il proxy PHAROS (/kiwix), senza indirizzi manuali.
+[kiwix]
+server_url = "http://127.0.0.1:8081"
+browser_url = ""

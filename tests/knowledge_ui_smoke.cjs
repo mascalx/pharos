@@ -1,0 +1,21 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const root = path.join(__dirname,'../src/pharos/web');
+const source=fs.readFileSync(path.join(root,'knowledge.js'),'utf8');
+new vm.Script(source);
+assert.match(source,/file\.addEventListener\('change',[\s\S]*?if\(file\.files\?\.length\)void uploadKBFile/);
+assert.match(source,/activeKBUploads\.has\(kb_id\) \|\| !fileField\.files\?\.length/);
+assert.match(source,/state\.fileField\.value='';state\.fileField\.disabled=false;state\.button\.disabled=false/);
+assert.match(source,/card\.append\(upload,uploadNotice,docList,zimSection\)/);
+assert.match(source,/deleteKB\.classList\.add\('destructive-action'\)/);
+assert.match(source,/deleteDoc\.classList\.add\('destructive-action'\)/);
+assert.match(source,/window\.confirm\(t\('kbRemoveDocConfirm'\)/);
+assert.doesNotMatch(source,/t\('kbRename'\)/);
+assert.match(source,/row\.append\(title,deleteDoc\)/);
+assert.match(source,/const lexicalArea=make\('div','kb-lexical-actions'\)/);
+const css=fs.readFileSync(path.join(root,'style.css'),'utf8');
+assert.match(css,/\.kb-lexical-actions\{[^}]*flex-direction:column/);
+for (const lang of ['it','en']) {const messages=JSON.parse(fs.readFileSync(path.join(root,'locales',lang+'.json'),'utf8')).messages;assert.ok(messages.kbUpload && messages.kbZimAdd);}
+console.log('KB UI source regression checks passed');

@@ -1,0 +1,728 @@
+/* PHAROS 0.5.0.dev2 — compact beacon navigation, home launcher, warm responsive UI.
+   Loaded after legacy styles to preserve every existing component and behavior. */
+.shell{
+  --bg:#f8ecdd;--panel:#f1deca;--panel-b:#f7e9da;--stroke:#dbc2a9;
+  --text:#211c19;--muted:#775841;--mint:#ad2446;--red:#b32645;
+  display:block;min-height:100dvh;background:var(--bg);color:var(--text);
+}
+.shell .sidebar{display:none!important}
+.shell .main{min-height:100dvh;padding-top:32px}
+.pharos-topbar{height:32px;position:fixed;top:0;left:0;right:0;background:#050505;z-index:100}
+/* Native 76×59 PNG: the extra 11 px on each side are the curved joins to
+   the 32 px bar. Do not scale or clip them. The central tab blends into the bar with a 59px deep, shadowless backing;
+   preserve the user-approved top offset and round underside. */
+.pharos-logo{position:absolute;left:50%;top:6px;transform:translateX(-50%);z-index:4;
+  width:76px;height:59px;display:block;border:0;border-radius:0;
+  background:transparent;color:#072538;padding:0;box-shadow:none;
+  isolation:isolate;touch-action:manipulation}
+.pharos-logo::before{content:"";position:absolute;top:0;left:11px;
+  width:54px;height:59px;background:#050505;border-radius:0 0 54px 54px;
+  z-index:0;pointer-events:none}
+.pharos-logo img{position:relative;z-index:1;display:block;width:76px;height:59px;
+  max-width:none;object-fit:fill;border-radius:0}
+.pharos-logo:hover img{filter:brightness(1.06)}
+.pharos-logo:focus-visible,.notification-indicator:focus-visible,.home-tile:focus-visible{
+  outline:3px solid #bc3353;outline-offset:3px}
+.notification-indicator{position:absolute;right:1%;top:5px;
+  width:98%;height:23px;padding:0;border:0;background:transparent;
+  display:flex;align-items:center;justify-content:flex-end;touch-action:manipulation}
+.signal-line{display:block;width:100%;height:7px;border-radius:999px;
+  background:#10501c;transition:background .2s,box-shadow .2s}
+.notification-indicator.has-unread .signal-line{
+  background:#48d553;box-shadow:0 0 10px #4adf5590}
+.notification-indicator.has-error .signal-line{background:#e7952d;box-shadow:0 0 10px #e7952d80}
+.shell .content{max-width:1600px;padding:28px clamp(12px,3.8vw,56px) 42px;margin:0 auto}
+.page-heading{margin:2px 0 8px;min-height:0}
+.page-heading h1{font-size:clamp(24px,2.8vw,34px);margin:0;font-weight:750;letter-spacing:-.8px}
+.showing-home .page-heading{display:none}
+.shell .view.active{display:block}
+.home-intro{margin:10px 0 23px}
+.home-intro h2{font-size:clamp(23px,3vw,33px);margin:0 0 8px;letter-spacing:-.6px}
+.home-intro p{font-size:14px;color:var(--muted);margin:0}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));grid-auto-rows:1fr;gap:15px;max-width:1120px}
+.home-tile{text-align:left;min-height:148px;height:100%;border-radius:17px;border:1px solid #e1c4aa;
+  background:#f0ddca;color:#211c19;padding:21px 22px;display:flex;flex-direction:column;
+  align-items:flex-start;gap:8px;box-shadow:0 3px 14px #804f2910;touch-action:manipulation;
+  transition:background .15s,transform .15s,border-color .15s}
+.home-tile:hover{background:#f8e5d0;border-color:#bc9b83;transform:translateY(-2px)}
+.home-tile .tile-symbol{font-size:27px;line-height:1;color:#ad2446}
+.home-tile strong{font-size:18px}
+.home-tile>span:last-child{font-size:12px;color:#775841;line-height:1.4}
+.home-footer{font-size:11px;color:#84644d;margin-top:25px;line-height:1.6}
+.shell .view>.section-heading{margin:0 0 15px;align-items:center;flex-wrap:wrap;gap:8px 16px}
+.shell .view>.section-heading>div{min-width:0;flex:1 1 180px}
+.shell .view>.section-heading h2{margin:0;font-size:19px;line-height:1.3;font-weight:650;overflow-wrap:anywhere}
+.shell .view>.section-heading>button{min-height:44px;flex:0 0 auto;margin-inline-start:auto}
+.shell .section-heading p,.shell .help-text,.shell .panel p{color:var(--muted)}
+.shell .stat-card,.shell .panel{border-color:#dec1a7;background:#f1dfcd}
+.shell .stat-card>span,.shell .stat-card small{color:#765c4a}
+.shell .outline-btn{background:#f7e7d6;color:#271e18;border:1px solid #d4b49b}
+.shell .outline-btn:hover{border-color:#9e2947}
+.shell .primary-btn{background:linear-gradient(120deg,#be2e4b,#a3213f);color:white}
+.shell .ghost-btn{color:#8d2640}
+.shell .text-button{color:#ad2446}
+.shell .hero{background:radial-gradient(circle at 74% 45%,#ecd4b9,#f3e3d0);border-color:#d6b79a}
+.shell .hero h2{color:#241b17}
+.shell .hero p{color:#705540}
+.shell .hero-tag{color:#aa2546}
+.shell .tags span{background:#f7e9d7;color:#9a2043}
+.shell .health-row,.shell .config-row{border-color:#dcc2a9}
+.shell .health-row span,.shell .config-row span,.shell .config-row code{color:#785b43}
+.shell .chat-card{display:flex;flex-direction:column;min-width:0;min-height:clamp(380px,calc(100dvh - 200px),850px);
+  border:1px solid #e0bda1;background:#f0dcc7;overflow:hidden}
+.shell #view-chat.active{display:flex;flex-direction:column}
+.shell .chat-toolbar{flex:none;padding:12px 16px;gap:10px;border-color:#dfbda4}
+.shell .chat-toolbar label{color:#74533e}
+.shell .chat-toolbar select,.shell .kb-model-row select{background:#f8e9d9;border:1px solid #d7b498;color:#201c19}
+.shell .chat-kb-disclosure{border-bottom:1px solid #dbbda6;background:#f3e0cc;flex:none}
+.chat-kb-disclosure>summary{list-style-position:inside;padding:11px 15px;cursor:pointer;
+  min-height:44px;color:#8c2a48;font-size:13px;font-weight:700;touch-action:manipulation}
+.chat-kb-disclosure>summary::marker{font-size:11px}
+.shell .chat-kb-bar{padding:10px 16px;border-top:1px solid #dfc2a7;border-bottom:0;background:transparent}
+.shell .chat-kb-choice{background:#fae9d7;border-color:#d4b397;color:#241c18}
+.shell .chat-kb-choice:has(input:checked){background:#d8ecdf;border-color:#479e86}
+.shell .chat-kb-note{color:#74553f}
+.shell .chat-log{flex:1 1 auto;min-height:190px;height:auto;padding:19px;overflow-y:auto;overscroll-behavior:contain}
+.shell .empty-icon,.shell .stat-symbol{color:#ad2446}
+.shell .chat-empty p{color:#75543e}
+.shell .message{border-color:#ddc2ab;color:#271e17}
+.shell .message.user{background:#d8e9dc;border-color:#a5ccb5}
+.shell .message.assistant{background:#fbecde;border-color:#e3cdb7}
+.shell .message-role{color:#a62748}
+.shell .chat-citations{border-color:#dec4ad}
+.shell .chat-citations strong{color:#765841}
+.shell .chat-citations a,.shell .kb-file-link{color:#a42243}
+.shell .chat-form{flex:none;align-items:flex-end;padding:12px 14px 9px;border-color:#d9b99d}
+.shell .chat-form textarea{min-width:0;resize:none;min-height:52px;max-height:160px;
+  background:#faebdd;color:#201b18;border:1px solid #d4b094}
+.shell .chat-form textarea:focus{border-color:#bd4260;outline:2px solid #bd426030}
+.shell .inline-feedback{color:#a32245}
+.shell .kb-manager-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))}
+.shell .kb-card-head,.shell .kb-document-row,.shell .kb-upload-form{border-color:#ddc1a8}
+.shell .kb-muted,.shell .kb-docs-title,.shell .kb-field-label{color:#71543f}
+.shell .kb-field input,.shell .kb-inline-editor input,.shell .kb-field textarea,
+.shell .settings-field input:not([type=checkbox]),.shell .settings-field select,
+.shell .settings-inline input,.shell .kb-mode-field select{
+  background:#faebdc;color:#201b18;border:1px solid #d5b499;border-radius:9px}
+.shell .settings-form fieldset{border-color:#d3b99f}
+.shell .kb-choice,.shell .kb-catalog-note{background:#faebdc;color:#271f1b;border-color:#ddc3aa}
+.shell .kb-choice-name{color:#271e1b}
+.shell .kb-choice-count{color:#725742}
+.shell .kb-upload-form input::file-selector-button{background:#f7e7d6;color:#221b16;border:1px solid #d4b49b}
+.shell .kb-answer{border-color:#dec4ac}
+.shell .kb-reindex-progress progress{accent-color:#af2a48}
+.settings-account{display:flex;justify-content:flex-end;margin:0 0 8px}
+@media(max-width:680px){
+  .shell .content{padding:28px 12px 20px}
+  .notification-indicator{left:1%;right:auto;width:98%}
+  .home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .home-tile{min-height:128px;padding:14px 12px;gap:7px;border-radius:13px}
+  .home-tile .tile-symbol{font-size:24px}
+  .home-tile strong{font-size:15px}
+  .home-tile>span:last-child{font-size:11px}
+  .home-intro{margin-bottom:18px}
+  .shell .view>.section-heading{gap:6px 12px;margin:0 0 10px}
+  .shell .view>.section-heading h2{font-size:15px}
+  .shell .view>.section-heading>div{flex-basis:140px}
+  .shell .chat-card{height:calc(100dvh - 160px);min-height:310px;border-radius:12px}
+  .shell .chat-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:9px 10px}
+  .shell .chat-toolbar label{display:none}
+  .shell .chat-toolbar select{grid-column:1;grid-row:1;width:100%;max-width:none;min-height:44px;font-size:13px}
+  .shell .chat-toolbar .outline-btn{grid-column:2;grid-row:1;min-height:44px;padding:8px 10px}
+  .shell .chat-log{padding:12px;min-height:110px;gap:10px}
+  .shell .message{max-width:94%;padding:10px 11px;font-size:13px}
+  .shell .chat-form{padding:9px;gap:7px}
+  .shell .chat-form textarea{min-height:47px;max-height:120px;padding:11px 10px;font-size:14px}
+  .shell .chat-form .primary-btn{min-width:58px;min-height:47px;padding:9px}
+  .shell .chat-kb-bar{padding:9px}
+  .shell .panel{padding:17px 15px}
+  .shell .stat-card{min-height:120px}
+}
+@media(max-width:350px){.home-grid{grid-template-columns:1fr}.home-tile{min-height:96px}}
+@media(prefers-reduced-motion:reduce){.home-tile,.signal-line{transition:none!important}}
+
+.shell #chat-feedback:empty{display:none}
+.shell .chat-kb-disclosure[open] .chat-kb-bar{max-height:26dvh;overflow-y:auto}
+
+/* Fixed top bar remains available while the document or a module scrolls. */
+html{scroll-padding-top:76px}
+
+/* 0.5.0.dev4: credentials live inside their existing General/Security fieldsets. */
+.settings-credential-editor{border-top:1px solid var(--stroke,#dec1a7);padding-top:15px;margin-top:18px;display:grid;gap:7px}
+.settings-credential-editor>.config-row{margin:0;padding:6px 0}
+.settings-credential-editor>label{font-size:.84rem;font-weight:600}
+.settings-credential-editor .settings-inline{margin:0}
+.settings-credential-editor .settings-inline input{flex:1 1 230px;min-width:0;max-width:100%;background:#faebdc;color:#201b18;border:1px solid #d5b499;border-radius:9px}
+.settings-credential-editor .settings-inline button{min-height:42px}
+.chat-citation-document{font-size:12px;overflow-wrap:anywhere}
+.chat-citation-document span{color:var(--muted)}
+
+/* 0.5.0.dev5: compact settings controls. Flex wrapping allocates space by
+   control type rather than making every checkbox/number occupy a 245px grid
+   column. Long labels remain readable; numeric inputs are deliberately narrow. */
+.shell .settings-form-grid{
+  display:flex;flex-wrap:wrap;align-items:flex-start;
+  gap:15px 18px;
+}
+.shell .settings-form-grid .settings-field{
+  flex:0 1 215px;min-width:0;max-width:100%;
+}
+.shell .settings-form-grid .settings-field--toggle{
+  flex:0 0 max-content;min-width:0;max-width:100%;
+}
+.shell .settings-form-grid .settings-field--number{
+  flex:0 0 max-content;min-width:120px;max-width:min(100%,250px);
+}
+.shell .settings-form-grid .settings-field--number input[type="number"]{
+  width:min(100%,120px);
+}
+.shell .settings-form-grid .settings-field--model{flex:0 1 260px}
+.shell .settings-form-grid .settings-field--select{flex:0 1 220px}
+.shell .settings-form-grid .settings-field--path{flex:0 1 250px}
+.shell .settings-form-grid .settings-field--short{flex:0 1 150px}
+.shell .settings-form-grid .settings-field--toggle input[type="checkbox"]{
+  flex:0 0 auto;
+}
+@media (max-width:420px){
+  .shell .settings-form-grid{gap:13px 14px}
+  .shell .settings-form-grid .settings-field--model,
+  .shell .settings-form-grid .settings-field--path{flex-basis:min(100%,260px)}
+}
+
+/* dev15: restore the bilingual welcome heading on the launcher Home.
+   The obsolete global page heading remains hidden only on Home. */
+#view-home .home-intro{margin:5px 0 23px}
+#view-home .home-intro h2{display:flex;align-items:center;gap:12px;
+  font-size:clamp(23px,3vw,33px);line-height:1.24;margin:0;flex-wrap:wrap}
+#view-home .home-intro-icon{color:#ad2446;font-size:.85em;line-height:1;flex:0 0 auto}
+@media(max-width:680px){#view-home .home-intro{margin:1px 0 18px}#view-home .home-intro h2{gap:9px}}
+
+/* 0.5.0.dev16: user-supplied Home emblem beside welcome title. */
+#view-home .home-intro-image{width:48px;height:48px;object-fit:contain;flex:0 0 auto;border-radius:10px}
+@media(max-width:680px){#view-home .home-intro-image{width:38px;height:38px}}
+
+/* Kiwix: quiet, touch-friendly tiles without persistent help panels. */
+.kiwix-search-form{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.kiwix-search-form[hidden]{display:none}
+.kiwix-search-form input,.kiwix-search-form select{min-width:160px;flex:1 1 220px;background:#faebdc;color:#201b18;border:1px solid #d5b499;border-radius:9px;padding:12px;min-height:44px}
+.kiwix-search-form .primary-btn{min-height:44px}
+.kiwix-book-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:14px;margin:14px 0}
+.kiwix-book{min-width:0;padding:15px;border-radius:12px;border:1px solid #d6b79a;background:#faebdc;display:flex;flex-direction:column;align-items:start;gap:8px}
+.kiwix-book strong{overflow-wrap:anywhere}
+.kiwix-book small{color:#805b45}.kiwix-book p{margin:0;color:#765b49;font-size:12px;line-height:1.5}
+.kiwix-book a{color:#ad2446;font-weight:650;font-size:13px;min-height:40px;display:flex;align-items:center}
+#kiwix-more{min-height:44px}
+.home-tile[hidden]{display:none!important}
+
+/* 0.6.0.dev4 — center the launcher, including partially filled final rows.
+   Other views, color palette and user-customized notification CSS stay intact. */
+@media (min-width:681px){
+  #view-home .home-intro h2{justify-content:center;text-align:center}
+  #view-home .home-grid{display:flex;flex-wrap:wrap;justify-content:center;
+    max-width:1120px;margin-inline:auto}
+  #view-home .home-grid .home-tile{flex:0 0 240px;width:240px;max-width:calc(100vw - 40px);min-width:0}
+  #view-home .home-edit-bar{justify-content:center}
+  #view-home .home-footer{text-align:center}
+}
+
+/* dev5: accessible long-running KB document ingestion indicator. */
+.kb-ingest-progress{flex:1 0 100%;margin:10px 0 0;color:var(--mint);font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.kb-ingest-progress:not([hidden])::before{content:'◌';display:inline-block;margin-right:8px;animation:pharos-ingest-turn 1.5s linear infinite}
+@keyframes pharos-ingest-turn{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.kb-ingest-progress::before{animation:none!important}}
+
+/* Qwen3 chat thinking control: visible only for matching models. */
+.chat-toolbar #chat-thinking {flex:0 1 140px;min-width:110px;max-width:160px;}
+.chat-toolbar #chat-thinking-label {white-space:nowrap;}
+
+/* Mobile chat controls: the model and thinking selectors must never
+   occupy the same grid cell. Keep both touch targets at least 44px tall. */
+@media(max-width:680px){
+  .shell .chat-toolbar #model-select{
+    grid-column:1;grid-row:1;min-width:0;max-width:100%;width:100%;
+  }
+  .shell .chat-toolbar #chat-thinking:not([hidden]){
+    grid-column:1;grid-row:2;min-width:0;max-width:100%;width:100%;
+  }
+  .shell .chat-toolbar #refresh-models{
+    grid-column:2;grid-row:1;
+  }
+  .shell .chat-toolbar #chat-npu-action:not([hidden]){
+    grid-column:2;grid-row:2;
+  }
+}
+/* Explicit description styling, independent of the editing controls. */
+.home-tile .home-tile-description{
+  display:block;font-size:12px;color:#775841;line-height:1.45;
+}
+@media(max-width:680px){
+  .home-tile .home-tile-description{font-size:11px}
+}
+
+/* Phase 1 update discovery: preserve existing red/orange/green precedence. */
+.notification-indicator.has-update:not(.has-unread):not(.has-error) .signal-line{
+  background:#1884e5;box-shadow:0 0 10px #1884e590;
+}
+.pharos-updates-panel{margin-top:16px}
+.pharos-updates-heading{display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:10px}
+.pharos-updates-heading h4{margin:0;font-size:17px}
+.pharos-updates-details{display:grid;grid-template-columns:minmax(0,1fr) auto;
+  gap:10px 14px;align-items:center;font-size:13px}
+.pharos-updates-details code{font-size:12px;word-break:break-all}
+.pharos-updates-panel .help-text{margin:14px 0}
+.pharos-updates-panel #updates-compare{display:inline-block;margin:0 0 8px}
+.pharos-updates-panel #updates-compare[hidden]{display:none}
+@media(max-width:680px){
+  .pharos-updates-heading{align-items:flex-start}
+  .pharos-updates-details{grid-template-columns:minmax(0,1fr)}
+  .pharos-updates-details code{margin-bottom:4px}
+}
+
+/* Manual updates: prominent but non-intrusive controls in Diagnostics. */
+.pharos-update-actions{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin-top:14px}
+.pharos-update-actions #updates-install{min-height:44px}
+.pharos-update-actions #updates-install[hidden]{display:none}
+.pharos-update-actions #updates-install-status{margin:4px 0 0;overflow-wrap:anywhere}
+@media(max-width:680px){
+  .pharos-update-actions{align-items:stretch}
+  .pharos-update-actions #updates-install{width:100%}
+}
+
+/* Notification beacon: invisible when idle, gentle fade while unread or update.
+   Keep the approved beacon geometry untouched on desktop and mobile. */
+.notification-indicator[hidden]{display:none!important}
+.notification-indicator.has-unread .signal-line,
+.notification-indicator.has-update:not(.has-unread) .signal-line{
+  animation:pharos-notification-fade 3.4s ease-in-out infinite;
+}
+@keyframes pharos-notification-fade{
+  0%,100%{opacity:.28}
+  50%{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .notification-indicator .signal-line{animation:none!important;opacity:1!important}
+}
+.job-notification-active progress{width:100%;height:9px;display:block;margin:8px 0;accent-color:#1683be}
+
+/* Explicit diagnostic value colors; avoid generic theme rules overriding states. */
+.shell .health-row strong.ok{color:#167b3e!important}
+.shell .health-row strong.bad{color:#c52940!important}
+.shell .health-row strong.warn{color:#986300!important}
+
+/* Kiwix library: large title target and safely separated KB/delete actions. */
+.kiwix-book .kiwix-book-title{
+  display:flex;align-items:center;min-height:44px;width:100%;font-size:15px;
+  line-height:1.35;color:#a82042;font-weight:750;text-decoration:none;
+  overflow-wrap:anywhere;
+}
+.kiwix-book .kiwix-book-title:hover{text-decoration:underline}
+.kiwix-book .kiwix-book-title:focus-visible{
+  outline:3px solid #b52c59;outline-offset:2px;border-radius:5px;
+}
+.kiwix-book .kiwix-book-actions{
+  display:flex;justify-content:space-between;gap:20px;width:100%;
+  flex-wrap:wrap;margin-top:auto;padding-top:12px;
+}
+.kiwix-book .kiwix-book-actions button{
+  min-height:44px;min-width:44px;touch-action:manipulation;
+}
+.kiwix-book .kiwix-book-actions .kiwix-delete-btn{margin-left:auto}
+.kiwix-book .kiwix-book-actions .kiwix-kb-link-chooser{
+  flex:1 1 100%;order:3;margin-top:6px;
+}
+@media(max-width:420px){
+  .kiwix-book .kiwix-book-actions{gap:16px}
+  .kiwix-book .kiwix-book-actions button{padding:11px 12px}
+}
+
+
+/* Translation manager uses the SAME palette as Configurazione and Knowledge
+   Base. Only selector specificity differs to override legacy dark-mode CSS. */
+.shell #view-translations .translation-manager{
+  background:#f1dfcd;color:#211c19;border-color:#dec1a7;
+}
+.shell #view-translations .translation-manager label,
+.shell #view-translations .translation-manager label span,
+.shell #view-translations .translation-entry-reference,
+.shell #view-translations .translation-entry-field,
+.shell #view-translations .translation-entry-field span{color:#211c19}
+.shell #view-translations .translation-manager input:not([type=checkbox]),
+.shell #view-translations .translation-manager select,
+.shell #view-translations .translation-manager textarea,
+.shell #view-translations .translation-manager select option{
+  background:#faebdc;color:#201b18;border:1px solid #d5b499;
+  border-radius:9px;-webkit-text-fill-color:#201b18;opacity:1;
+}
+.shell #view-translations .translation-manager input::placeholder,
+.shell #view-translations .translation-manager textarea::placeholder{color:#785b43;opacity:1}
+.shell #view-translations .translation-manager input:focus-visible,
+.shell #view-translations .translation-manager select:focus-visible,
+.shell #view-translations .translation-manager textarea:focus-visible{
+  outline:2px solid #bd4260;outline-offset:1px;border-color:#bd4260;
+}
+.shell #view-translations .translation-manager textarea:disabled,
+.shell #view-translations .translation-manager input:disabled{
+  background:#f1dfcd;color:#775841;-webkit-text-fill-color:#775841;
+  opacity:1;cursor:default;
+}
+.shell #view-translations .translation-entry-list{background:#f1dfcd;border-color:#dec1a7}
+.shell #view-translations .translation-entry{border-bottom-color:#dec1a7}
+.shell #view-translations .translation-entry:nth-child(even){background:#f7e9da}
+.shell #view-translations .translation-entry-reference code{color:#ad2446;font-weight:700}
+.shell #view-translations .translation-entry-reference div{color:#211c19}
+.shell #view-translations .translation-filter input[type=checkbox]{
+  width:18px;height:18px;accent-color:#ad2446
+}
+.shell #view-translations .translation-meta code,
+.shell #view-translations #translations-count{color:#775841}
+.shell #view-translations .translation-delete{color:#ad2446;border-color:#d4b49b}
+
+/* Offline map archive selector: compact on desktop, no persistent sidebar
+   that would narrow the future atlas on smartphones. */
+.shell #view-maps .maps-manager{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;width:100%;min-width:0}
+.shell #view-maps .panel{background:#f1dfcd;color:#211c19;border-color:#dec1a7}
+.shell #view-maps .panel h4{margin-top:0;color:#211c19}
+.shell #view-maps .maps-region-picker form{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+.shell #view-maps .maps-region-picker label{font-weight:700;font-size:13px;flex:1 1 100%}
+.shell #view-maps .maps-region-picker select{
+  flex:1 1 260px;min-width:0;background:#faebdc;color:#201b18;
+  border:1px solid #d5b499;border-radius:9px;min-height:44px;padding:8px;
+}
+.shell #view-maps .maps-region-picker button{min-height:44px}
+.shell #view-maps .maps-archive-row,.shell #view-maps .maps-job{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  border-top:1px solid #dec1a7;padding:10px 0;
+}
+.shell #view-maps .maps-archive-row strong,.shell #view-maps .maps-job strong{flex:1 1 180px;overflow-wrap:anywhere}
+.shell #view-maps .maps-archive-row small,.shell #view-maps .maps-job small{color:#775841}
+.shell #view-maps .maps-job button{margin-left:auto}
+.shell #view-maps .help-text{color:#775841}
+@media(max-width:680px){
+  .shell #view-maps .maps-region-picker form{display:grid;grid-template-columns:minmax(0,1fr)}
+  .shell #view-maps .maps-region-picker select{width:100%;flex:auto}
+  .shell #view-maps .maps-region-picker button{width:100%}
+}
+
+/* Verified-area catalog: responsive cards without shrinking the main content. */
+.shell #view-maps .maps-catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:12px}
+.shell #view-maps .maps-catalog-card{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:16px;background:#faebdc;border:1px solid #d5b499;border-radius:11px;color:#201b18}
+.shell #view-maps .maps-catalog-card strong{font-size:15px}
+.shell #view-maps .maps-catalog-card small{color:#775841;line-height:1.45}
+.shell #view-maps .maps-catalog-card button{margin-top:auto;min-height:44px}
+@media(max-width:680px){.shell #view-maps .maps-catalog-card button{width:100%}}
+
+/* Hierarchical map browser, same full-width panel geometry as Knowledge. */
+.shell #view-maps .maps-browser-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.shell #view-maps .maps-browser-header h4{margin:0}
+.shell #view-maps .maps-area-browser>label{display:block;margin:14px 0 7px;font-weight:700;font-size:13px}
+.shell #view-maps #maps-filter{width:100%;max-width:620px;min-height:44px;padding:10px 12px;background:#faebdc;color:#201b18;border:1px solid #d5b499;border-radius:9px}
+.shell #view-maps .maps-breadcrumbs{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}
+.shell #view-maps .maps-breadcrumbs button{min-height:40px}
+.shell #view-maps .maps-card-actions{display:flex;gap:9px;flex-wrap:wrap;width:100%;margin-top:auto}
+.shell #view-maps .maps-card-actions button{flex:1 1 auto;min-height:44px}
+.shell #view-maps .maps-more{grid-column:1/-1;min-height:44px}
+.shell #view-maps .maps-catalog-card{min-width:0}
+@media(max-width:680px){.shell #view-maps .maps-browser-header{align-items:flex-start}.shell #view-maps .maps-card-actions{flex-direction:column}.shell #view-maps .maps-breadcrumbs button{min-height:44px}}
+
+/* Coverage notices and per-area zoom selector. Keep existing warm palette. */
+.shell #view-maps .maps-coverage-warning{display:block;color:#915008;font-weight:650;line-height:1.45;overflow-wrap:anywhere}
+.shell #view-maps .maps-zoom-label{display:flex;flex-direction:column;gap:5px;width:100%;font-size:12px;font-weight:700;color:#775841}
+.shell #view-maps .maps-zoom-label select{width:100%;min-height:42px;background:#faebdc;color:#201b18;border:1px solid #d5b499;border-radius:9px;padding:7px 9px}
+.shell #view-maps .maps-archive-row .maps-coverage-warning{flex:1 1 100%}
+
+/* Offline map atlas is an immersive viewport, not a desktop sidebar. */
+body.maps-viewer-active{overflow:hidden}
+.maps-viewer[hidden]{display:none!important}
+.maps-viewer{position:fixed;inset:0;z-index:600;display:flex;flex-direction:column;background:#f1dfcd;color:#201b18;min-width:0;min-height:0}
+.maps-viewer-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 16px;background:#f1dfcd;border-bottom:1px solid #d5b499;z-index:2}
+.maps-viewer-heading{display:flex;flex-direction:column;gap:2px;min-width:0}
+.maps-viewer-heading h3{margin:0;color:#201b18;font-size:19px}
+.maps-viewer-heading small{font-size:12px;color:#775841;overflow-wrap:anywhere}
+.maps-viewer-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.maps-viewer-controls button{min-height:42px}
+.maps-viewer-canvas{flex:1 1 auto;min-height:0;min-width:0;width:100%;position:relative;background:#e8e3d8}
+.maps-viewer-credit{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:10px;padding:2px 7px;z-index:3;background:#f7eee2da;color:#55473c;border-radius:5px;white-space:nowrap;pointer-events:none}
+.maps-viewer-error[hidden]{display:none}
+.maps-viewer-error{position:absolute;top:86px;left:50%;transform:translateX(-50%);max-width:min(520px,90vw);padding:13px 16px;background:#faebdc;color:#762337;border:1px solid #ad2446;border-radius:8px;z-index:4;font-size:14px}
+@media(max-width:680px){.maps-viewer-toolbar{padding:8px 10px;gap:7px}.maps-viewer-heading h3{font-size:16px}.maps-viewer-heading small{font-size:11px}.maps-viewer-controls{width:100%;justify-content:space-between;gap:5px}.maps-viewer-controls button{font-size:12px;min-height:42px;padding:7px 9px}.maps-viewer-credit{bottom:3px;font-size:9px}}
+
+/* Local map library: same warm palette and card rhythm as Kiwix. */
+.shell #view-maps .maps-library-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:14px;margin:14px 0}
+.shell #view-maps .maps-library-card{min-width:0;border:1px solid #d6b79a;border-radius:12px;background:#faebdc;padding:15px;display:flex;flex-direction:column;gap:10px;color:#201b18}
+.shell #view-maps .maps-library-title{font-size:16px;line-height:1.3;overflow-wrap:anywhere}
+.shell #view-maps .maps-library-filename{font-size:11px;color:#805b45;overflow-wrap:anywhere}
+.shell #view-maps .maps-library-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 13px;margin:2px 0}
+.shell #view-maps .maps-library-detail{min-width:0;display:flex;flex-direction:column;gap:3px}
+.shell #view-maps .maps-library-detail span{font-size:11px;color:#805b45}
+.shell #view-maps .maps-library-detail strong{font-weight:650;font-size:13px;overflow-wrap:anywhere}
+.shell #view-maps .maps-library-area,.shell #view-maps .maps-library-note{font-size:11px;color:#765b49;line-height:1.4;overflow-wrap:anywhere}
+.shell #view-maps .maps-library-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:auto;padding-top:8px}
+.shell #view-maps .maps-library-actions button{min-height:44px;flex:1 1 auto}
+.shell #view-maps .maps-library-actions .maps-library-delete{color:#9a2738;border-color:#b86b6f}
+.shell #view-maps .maps-library-actions .maps-library-delete:hover{background:#f4dcda}
+@media(max-width:600px){.shell #view-maps .maps-library-grid{grid-template-columns:minmax(0,1fr)}.shell #view-maps .maps-library-actions button{min-height:46px}}
+
+/* Archived map titles open the atlas, like Kiwix book titles. */
+.shell #view-maps button.maps-library-title{display:inline-flex;align-self:flex-start;align-items:center;min-height:44px;max-width:100%;padding:5px 0;background:transparent;border:0;border-radius:4px;color:#ad2446;font:inherit;font-size:16px;font-weight:700;text-align:left;cursor:pointer;overflow-wrap:anywhere}
+.shell #view-maps button.maps-library-title:hover{text-decoration:underline}
+.shell #view-maps button.maps-library-title:focus-visible{outline:3px solid #ad2446;outline-offset:3px}
+.shell #view-maps .maps-library-actions .maps-library-delete{flex:0 1 auto;min-width:110px;margin-left:auto}
+
+/* Map viewer dev27: uninterrupted full viewport with one floating close action. */
+.maps-viewer{position:fixed;inset:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.maps-viewer-canvas{flex:1 1 auto;width:100%;height:100%;min-height:0}
+.maps-viewer-close-float{position:absolute;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:8;min-height:44px;min-width:72px;padding:8px 16px;border-radius:9px;box-shadow:0 2px 10px #201b183d}
+@media(max-width:680px){.maps-viewer-close-float{top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));min-height:44px;min-width:68px;padding:8px 12px}}
+
+
+/* dev28: compact library metadata and map-independent waypoint editor. */
+.shell #view-maps .maps-library-hierarchy{font-size:12px;color:#805b45;line-height:1.5;overflow-wrap:anywhere}
+.shell #view-maps .maps-library-date{font-size:10px;color:#805b45}
+.maps-waypoint-tools{position:absolute;left:max(12px,env(safe-area-inset-left));bottom:calc(34px + env(safe-area-inset-bottom));z-index:9;display:flex;align-items:end;gap:8px;flex-wrap:wrap;max-width:calc(100% - 24px)}
+.maps-waypoint-tools .outline-btn,.maps-waypoint-form .outline-btn{min-height:44px;border-color:#bda187;background:#f9ecdf;color:#4e342b;box-shadow:0 2px 9px #201b1833}
+.maps-waypoint-tools .outline-btn[aria-pressed="true"]{background:#ad2446;color:white;border-color:#ad2446}
+.maps-waypoint-actions{display:flex;gap:6px;flex-wrap:wrap}
+.maps-waypoint-actions[hidden],.maps-waypoint-form[hidden]{display:none!important}
+.maps-waypoint-form{position:absolute;right:max(12px,env(safe-area-inset-right));top:70px;z-index:10;width:min(355px,calc(100% - 24px));max-height:calc(100dvh - 100px);overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:16px;background:#faebdc;border:1px solid #d6b79a;border-radius:12px;color:#201b18;box-shadow:0 8px 30px #201b1855}
+.maps-waypoint-form strong{font-size:15px}
+.maps-waypoint-form label{font-size:12px;font-weight:650}
+.maps-waypoint-form input,.maps-waypoint-form textarea{min-width:0;width:100%;border:1px solid #bda187;background:#fffaf5;color:#201b18;padding:9px;border-radius:7px;font-size:14px}
+.maps-waypoint-coordinates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.maps-waypoint-coordinates label{display:flex;flex-direction:column;gap:5px;min-width:0}
+.maps-waypoint-form-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.maps-waypoint-form-actions button{min-height:44px}
+.maps-waypoint-form-actions #maps-waypoint-delete{margin-left:auto;color:#9a2738}
+.maps-waypoint-feedback{font-size:12px;color:#9a2738;min-height:1em;margin:0}
+.maps-waypoint-marker{width:21px;height:21px;border:3px solid #fffaf5;background:#ad2446;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 5px #201b1866;cursor:pointer}
+.maps-waypoint-marker:focus-visible{outline:3px solid #ad2446;outline-offset:3px}
+@media(max-width:680px){
+  .maps-waypoint-tools{bottom:calc(31px + env(safe-area-inset-bottom));left:max(8px,env(safe-area-inset-left));gap:5px}
+  .maps-waypoint-tools .outline-btn{padding:8px 10px;font-size:12px}
+  .maps-waypoint-form{top:auto;bottom:calc(85px + env(safe-area-inset-bottom));right:8px;left:8px;width:auto;max-height:calc(100dvh - 165px)}
+}
+
+
+/* dev29: PHAROS navigation stays visible while the atlas is in use.
+   The logo geometry from the approved topbar remains unchanged. */
+.maps-viewer{top:32px;z-index:90}
+.maps-viewer-close-float{top:max(12px,env(safe-area-inset-top))}
+.maps-waypoint-tools{
+  top:max(12px,env(safe-area-inset-top));bottom:auto;
+  left:max(12px,env(safe-area-inset-left));align-items:flex-start;max-width:calc(100% - 120px);
+}
+.maps-waypoint-icon{
+  display:grid;place-items:center;width:46px;height:46px;min-width:46px;min-height:46px;
+  padding:9px;border:1px solid #bda187;border-radius:10px;
+  background:#faebdc;color:#4e342b;box-shadow:0 2px 9px #201b1833;
+  touch-action:manipulation;
+}
+.maps-waypoint-icon:hover{background:#f2dac6;border-color:#ad2446}
+.maps-waypoint-icon:focus-visible{outline:3px solid #ad2446;outline-offset:2px}
+.maps-waypoint-icon svg{width:24px;height:24px;display:block;pointer-events:none}
+.maps-waypoint-icon[aria-pressed="true"]{background:#ad2446;color:#fff;border-color:#ad2446}
+.maps-waypoint-icon[hidden]{display:none!important}
+.maps-waypoint-actions{gap:6px}
+.maps-waypoint-move-button{align-self:flex-start;max-width:100%;white-space:normal;text-align:left}
+.maps-waypoint-move-hint{
+  position:absolute;z-index:11;top:70px;left:max(12px,env(safe-area-inset-left));
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:min(390px,calc(100% - 24px));
+  background:#faebdc;color:#201b18;border:1px solid #d6b79a;border-radius:10px;
+  padding:10px 12px;font-size:13px;box-shadow:0 4px 15px #201b183d
+}
+.maps-waypoint-move-hint[hidden]{display:none!important}
+.maps-waypoint-move-hint button{min-height:42px}
+@media(max-width:680px){
+  .maps-waypoint-tools{top:max(10px,env(safe-area-inset-top));bottom:auto;left:max(8px,env(safe-area-inset-left));max-width:calc(100% - 90px)}
+  .maps-waypoint-icon{width:44px;height:44px;min-width:44px;min-height:44px;padding:8px}
+  .maps-waypoint-form{bottom:calc(65px + env(safe-area-inset-bottom));max-height:calc(100dvh - 125px)}
+  .maps-waypoint-move-hint{top:66px;left:8px;right:8px;max-width:none}
+}
+
+
+/* dev31: offline GPX track library and map overlay, original PHAROS palette. */
+.maps-gpx-import-form{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+.maps-gpx-import-form input[type=file]{flex:1 1 210px;max-width:100%;font-size:13px;color:#553c2f}
+.maps-gpx-import-form .primary-btn{min-height:44px}
+.maps-gpx-feedback{color:#9b2444;font-size:12px;min-height:1em;overflow-wrap:anywhere}
+.maps-gpx-library{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:12px;margin:12px 0}
+.maps-gpx-row{border:1px solid #d8bba0;border-radius:10px;background:#faecdf;padding:11px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.maps-gpx-row-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.maps-gpx-row-head strong{font-size:14px;overflow-wrap:anywhere;min-width:0}
+.maps-gpx-row>small{font-size:11px;color:#775841}
+.maps-gpx-actions{display:flex;flex-wrap:wrap;gap:7px}
+.maps-gpx-actions button{min-height:40px;font-size:12px;padding:7px 11px}
+.maps-gpx-export{display:inline-flex;align-items:center;text-decoration:none;min-height:44px;margin-top:7px}
+.maps-gpx-toggle{position:absolute;z-index:9;bottom:calc(43px + env(safe-area-inset-bottom));left:max(12px,env(safe-area-inset-left));top:auto}
+.maps-gpx-toggle[aria-expanded=true]{background:#ad2446;color:#fff;border-color:#ad2446}
+.maps-gpx-panel{position:absolute;z-index:12;top:72px;left:max(12px,env(safe-area-inset-left));width:min(360px,calc(100% - 24px));max-height:calc(100dvh - 125px);overflow-y:auto;background:#faebdc;border:1px solid #d6b79a;border-radius:12px;box-shadow:0 7px 24px #201b1852;padding:15px;color:#201b18}
+.maps-gpx-panel[hidden]{display:none!important}
+.maps-gpx-panel>strong{display:block;font-size:16px}
+.maps-gpx-panel .help-text{margin:5px 0 10px}
+.maps-gpx-visible-list{display:flex;flex-direction:column;gap:8px}
+.maps-gpx-visibility{display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer}
+.maps-gpx-visibility input{width:18px;height:18px;accent-color:#ad2446}
+@media(max-width:680px){
+ .maps-gpx-toggle{bottom:calc(43px + env(safe-area-inset-bottom));left:max(8px,env(safe-area-inset-left));top:auto}
+ .maps-gpx-panel{top:65px;max-height:calc(100dvh - 130px)}
+ .maps-gpx-import-form .primary-btn{flex:1 1 100%}
+}
+
+/* dev32: GPX immediately below the waypoint button, even on mobile. */
+.maps-gpx-toggle{top:calc(max(12px,env(safe-area-inset-top)) + 56px);bottom:auto;left:max(12px,env(safe-area-inset-left))}
+.maps-gpx-panel{top:calc(max(12px,env(safe-area-inset-top)) + 112px)}
+@media(max-width:680px){
+ .maps-gpx-toggle{top:calc(max(10px,env(safe-area-inset-top)) + 52px);bottom:auto;left:max(8px,env(safe-area-inset-left))}
+ .maps-gpx-panel{top:calc(max(10px,env(safe-area-inset-top)) + 105px);max-height:calc(100dvh - 170px)}
+}
+
+
+/* dev32: GPX in the waypoint button column and safe embedded Kiwix reader. */
+body.kiwix-viewer-active{overflow:hidden}
+.kiwix-viewer[hidden]{display:none!important}
+.kiwix-viewer{position:fixed;inset:32px 0 0;z-index:90;background:#faebdc;overflow:hidden}
+.kiwix-viewer iframe{display:block;border:0;width:100%;height:100%;background:#fff;color:#201b18}
+.kiwix-viewer-close{position:absolute;z-index:9;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));min-width:72px;min-height:44px;padding:8px 15px;border-radius:9px;box-shadow:0 2px 10px #201b183d}
+@media(max-width:680px){
+ .kiwix-viewer-close{top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));padding:8px 12px}
+}
+
+/* dev33 — track titles behave like the rest of the offline library. */
+.maps-gpx-title{display:inline-block;max-width:100%;padding:5px 0;margin:0;
+ background:transparent;border:0;color:#ad2446;text-align:left;cursor:pointer;
+ font:inherit;font-weight:750;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
+.maps-gpx-title:hover{text-decoration:underline}
+.maps-gpx-title:focus-visible{outline:3px solid #ad2446;outline-offset:3px;border-radius:3px}
+.maps-gpx-import-form #maps-gpx-name{flex:1 1 210px;min-width:0;max-width:100%;
+ border:1px solid #d5b499;border-radius:9px;background:#faebdc;color:#201b18;
+ padding:9px 11px;min-height:44px;font-size:13px}
+.kiwix-viewer iframe{color-scheme:only light;background:#faebdc}
+
+
+/* dev34: compact single-step GPX import and thumb-safe destructive actions. */
+.maps-gpx-actions{display:flex;justify-content:space-between;align-items:center;gap:18px;width:100%;margin-top:auto}
+.maps-gpx-actions button{min-height:44px;min-width:82px}
+.maps-gpx-actions button:last-child{margin-left:auto}
+.maps-gpx-import-form #maps-gpx-file{flex:1 1 100%;min-height:44px}
+#maps-gpx-import-status:empty{display:none}
+#maps-gpx-import-status{font-size:12px;color:#73533e}
+/* Integrated KB reader retains PHAROS shell/nav and does not inherit ZIM styles. */
+.kb-document-viewer[hidden]{display:none!important}
+.kb-document-viewer{position:fixed;inset:32px 0 0;z-index:90;
+  display:flex;flex-direction:column;background:#faebdc;color:#201b18}
+body.kb-document-viewer-active{overflow:hidden}
+.kb-document-viewer-toolbar{display:flex;align-items:center;gap:10px;
+  padding:10px 14px;min-height:62px;border-bottom:1px solid #d8b89d;background:#f1dfcd}
+.kb-document-viewer-toolbar strong{flex:1;min-width:0;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+.kb-document-viewer-toolbar a,.kb-document-viewer-toolbar button{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:8px 14px;min-height:44px;flex-shrink:0;text-decoration:none}
+.kb-document-viewer iframe{display:block;border:0;flex:1;width:100%;
+  background:#fff;color:#201b18;min-height:0}
+.kb-document-viewer iframe[hidden]{display:none!important}
+.kb-document-viewer pre{flex:1;overflow:auto;margin:0;padding:24px;
+  background:#fff9f1;color:#201b18;white-space:pre-wrap;overflow-wrap:anywhere;
+  font-family:ui-monospace,Consolas,monospace;font-size:14px;line-height:1.65}
+.kb-document-viewer pre[hidden]{display:none!important}
+.kb-document-viewer-status{padding:24px;font-size:14px}
+.kb-document-viewer-status[hidden]{display:none!important}
+@media(max-width:680px){
+ .kb-document-viewer-toolbar{padding:7px 8px;gap:7px;min-height:62px}
+ .kb-document-viewer-toolbar strong{font-size:12px}
+ .kb-document-viewer-toolbar a,.kb-document-viewer-toolbar button{padding:7px 9px;min-height:44px}
+ .kb-document-viewer pre{padding:14px}
+}
+
+/* 0.7.0.dev12: optional local geographic search; retain existing map theme. */
+.maps-search-optin{display:flex;gap:9px;align-items:center;margin:10px 0 4px;
+  font-size:13px;line-height:1.4;color:var(--text)}
+.maps-search-optin input{margin:0;flex:none;width:17px;height:17px;accent-color:#ad2446}
+.maps-search-ready{display:block;font-weight:600;color:var(--muted);margin:8px 0}
+.maps-search-form{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+.maps-search-form input{flex:1 1 230px;min-width:0;max-width:100%}
+.maps-search-results{display:grid;gap:8px;margin-top:10px}
+.maps-search-result{border:1px solid var(--stroke);border-radius:10px;padding:10px 12px;
+  display:flex;gap:12px;align-items:center;justify-content:space-between;background:var(--panel-b)}
+.maps-search-result>div{min-width:0;display:flex;flex-direction:column;gap:4px}
+.maps-search-result strong{overflow-wrap:anywhere}
+.maps-search-result small{color:var(--muted)}
+.maps-search-result button{flex:none;min-height:40px}
+@media(max-width:520px){.maps-search-result{align-items:flex-start;flex-direction:column}
+  .maps-search-result button{align-self:stretch}}
+
+
+/* dev17: explicit, compact offline geographic Chat mode. Same warm palette
+   and controls as the existing Chat; mobile buttons remain touch-friendly. */
+.shell .chat-geo-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;
+  padding:9px 15px;border-bottom:1px solid #dfc2a7;background:#f3e0cc}
+.chat-geo-bar label{display:inline-flex;align-items:center;gap:8px;
+  color:#241c18;font-size:13px;font-weight:650;cursor:pointer}
+.chat-geo-bar input{width:17px;height:17px;margin:0;accent-color:#ad2446}
+.chat-geo-bar .chat-geo-hint{font-size:11px;color:#775841;line-height:1.4}
+.chat-geo-results{display:flex;flex-direction:column;gap:7px;margin-top:11px}
+.chat-geo-query{color:#775841;font-size:11px}
+.chat-geo-result{display:flex;align-items:center;justify-content:space-between;
+  gap:12px;border:1px solid #dfbda4;border-radius:11px;padding:11px 12px;
+  background:#f9eadb;color:#211c19}
+.chat-geo-info{min-width:0;display:flex;flex-direction:column;gap:4px}
+.chat-geo-info strong{font-size:13px;overflow-wrap:anywhere}
+.chat-geo-info small{font-size:11px;line-height:1.45;color:#765841;overflow-wrap:anywhere}
+.chat-geo-info .chat-geo-caution{color:#914226}
+.chat-geo-result button{flex-shrink:0;min-height:36px}
+@media(max-width:600px){
+  .shell .chat-geo-bar{padding:8px 11px}
+  .chat-geo-result{flex-wrap:wrap}
+  .chat-geo-result button{width:100%;min-height:43px}
+}
+
+/* dev26: use the current theme for destructive actions. */
+.shell .outline-btn.destructive-action{color:var(--red);border-color:var(--red)}
+.shell .outline-btn.destructive-action:hover,.shell .outline-btn.destructive-action:focus-visible{border-color:var(--red);outline:2px solid var(--red);outline-offset:2px}
+
+/* dev28: compact updates panel; only the progress status remains during installation. */
+.pharos-updates-panel [hidden]{display:none!important}
+.pharos-updates-details{margin-top:16px;grid-template-columns:minmax(0,1fr) auto}
+.pharos-updates-details code{text-align:end;overflow-wrap:anywhere;word-break:normal}
+.pharos-updates-panel .pharos-update-actions:has(> [hidden]:first-child + [hidden]){margin-top:0}
+.pharos-updates-panel.is-updating > :not(.pharos-update-actions){display:none!important}
+.pharos-updates-panel.is-updating .pharos-update-actions{margin:0;align-items:center;padding:12px 0}
+.pharos-update-actions #updates-install-status.update-running{font-size:1.1rem;font-weight:700;color:var(--text);text-align:center;margin:0}
+.pharos-updates-heading #updates-check{min-height:44px}
+@media(max-width:420px){.pharos-updates-details{gap:8px 10px}.pharos-updates-details code{font-size:12px}}
+
+/* dev32: safe assistant Markdown, warm search input and localized file picker. */
+.shell .message-markdown{white-space:normal;min-width:0;overflow-wrap:anywhere}
+.shell .message-markdown p{margin:0 0 .65em;color:inherit;font-size:inherit;line-height:inherit}
+.shell .message-markdown h3,.shell .message-markdown h4,.shell .message-markdown h5,.shell .message-markdown h6{margin:.9em 0 .4em;font-size:1.08em;line-height:1.4;color:inherit}
+.shell .message-markdown ul,.shell .message-markdown ol{padding-inline-start:1.5em;margin:.4em 0 .7em}
+.shell .message-markdown li{margin:.18em 0}
+.shell .message-markdown pre{padding:12px;background:#f1dfcd;border:1px solid var(--stroke);border-radius:8px;white-space:pre;overflow:auto;max-width:100%;margin:.6em 0}
+.shell .message-markdown code{font-family:ui-monospace,monospace;background:#f1dfcd;padding:.1em .25em;border-radius:3px}
+.shell .message-markdown pre code{background:transparent;padding:0}
+.shell .message-markdown blockquote{margin:.5em 0;padding:.25em .8em;border-inline-start:3px solid var(--stroke)}
+.shell .message-markdown .markdown-table{max-width:100%;overflow-x:auto;margin:.6em 0}
+.shell .message-markdown table{border-collapse:collapse;font-size:inherit}
+.shell .message-markdown th,.shell .message-markdown td{border:1px solid var(--stroke);padding:6px 9px;text-align:start;vertical-align:top}
+.shell .message-markdown th{background:#f1dfcd}
+.shell .message-markdown a{color:#a42243;text-decoration:underline}
+.shell .message-markdown hr{border:0;border-top:1px solid var(--stroke);margin:.8em 0}
+.shell .message-markdown>:first-child{margin-top:0}
+.shell .message-markdown>:last-child{margin-bottom:0}
+.shell .maps-search-form input[type=search]{background:#faebdc;color:#201b18;border:1px solid #d5b499;border-radius:9px;padding:12px;min-height:44px;color-scheme:light}
+.shell .maps-search-form input[type=search]::placeholder{color:#775841;opacity:1}
+.shell .maps-search-form input[type=search]:focus-visible{outline:2px solid #ad2446;outline-offset:1px}
+.shell .maps-gpx-import-form input[hidden]{display:none!important}
+
+/* RC2: waypoint editor stays within the map viewport on touch screens.
+   Keep user pinch zoom available; 16px fields avoid iOS focus auto-zoom. */
+@media(max-width:680px), (pointer:coarse) and (max-height:540px){
+ .maps-waypoint-form{top:64px;bottom:auto;left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));width:auto;max-height:calc(100% - 72px - env(safe-area-inset-bottom));min-height:0;padding:10px;gap:5px;overflow:auto;overscroll-behavior:contain}
+ .maps-waypoint-form>*{flex-shrink:0}
+ .maps-waypoint-form input,.maps-waypoint-form textarea{font-size:16px;padding:7px;min-width:0}
+ .maps-waypoint-form textarea{height:58px;min-height:48px;resize:vertical}
+ .maps-waypoint-form-actions{gap:5px}
+ .maps-waypoint-form-actions button{padding:8px 10px;min-height:44px}
+ .maps-waypoint-form .maps-waypoint-move-button{padding:8px 10px}
+ .maps-waypoint-feedback:empty{display:none}
+}

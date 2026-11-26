@@ -1,0 +1,20 @@
+# ESEMPIO: adattare percorsi e nome utente, poi copiare in /etc/systemd/system/pharos.service
+# Nessuna variabile d'ambiente applicativa viene utilizzata.
+[Unit]
+Description=PHAROS offline-first platform
+After=network-online.target remote-fs.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pharos
+Group=pharos
+WorkingDirectory=/opt/pharos
+ExecStart=/opt/pharos/.venv/bin/pharos serve --config /etc/pharos/config.toml
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

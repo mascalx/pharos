@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "release": "0.8.0",
+  "update_mode": "core_reinstall",
+  "data_migrations": "none",
+  "third_party_binary_changes": false,
+  "requires_manual_steps": false,
+  "notes": "Promote qualified RC8 to 0.8.0; version and documentation only, no data migration or external binary changes."
+}
